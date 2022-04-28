@@ -1,0 +1,874 @@
+name: 1zad
+source code: |-
+  input: 'ABC$ABC$abc$dabC$abdcAB$CA '
+  blank: ' '
+  start state: first
+  table:
+    first:
+      a: {L: setstart}
+      b: {L: setstart}
+      c: {L: setstart}
+      A: {L: setstart}
+      B: {L: setstart}
+      C: {L: setstart}
+      d: {L: setstart}
+      t: R
+      u: R
+      v: R
+      w: R
+      x: R
+      y: R
+      z: R
+      $: R
+      ' ': {L: restore_tape}
+    setstart:
+      ' ': {write: /, R: start}
+      $: {write: /, R: start}
+    start:
+      a: {write: t, R: finda}
+      b: {write: u, R: findb}
+      c: {write: v, R: findc}
+      A: {write: w, R: findA}
+      B: {write: x, R: findB}
+      C: {write: y, R: findC}
+      d: {write: z, R: findd}
+    start_f:
+      a: {write: t, R: finda_f}
+      b: {write: u, R: findb_f}
+      c: {write: v, R: findc_f}
+      A: {write: w, R: findA_f}
+      B: {write: x, R: findB_f}
+      C: {write: y, R: findC_f}
+      d: {write: z, R: findd_f}
+      $: {R: find_last_f}
+      \: {R: next_last_f}
+      ;: {R: find_last_f}
+      ' ': {R: find_last_f}
+    back:
+      \: L
+      a: L
+      b: L
+      c: L
+      A: L
+      B: L
+      C: L
+      d: L
+      t: L
+      u: L
+      v: L
+      w: L
+      x: L
+      y: L
+      z: L
+      $: L
+      ;: L
+      /: {R: dalsi}
+    dalsi:
+      t: R
+      u: R
+      v: R
+      w: R
+      x: R
+      y: R
+      z: R
+      a: {L: after}
+      b: {L: after}
+      c: {L: after}
+      A: {L: after}
+      B: {L: after}
+      C: {L: after}
+      d: {L: after}
+      $: {L: after}
+      ;: {L: after}
+      \: {L: after}
+      ' ': {L: after}
+    after:
+      t: {R: start_f}
+      u: {R: start_f}
+      v: {R: start_f}
+      w: {R: start_f}
+      x: {R: start_f}
+      y: {R: start_f}
+      z: {R: start_f}
+    reset:
+      a: R
+      b: R
+      c: R
+      A: R
+      B: R
+      C: R
+      d: R
+      t: R
+      u: R
+      v: R
+      w: R
+      x: R
+      y: R
+      z: R
+      \: {write: $, R}
+      ;: R
+      ' ': {L: reroll}
+      $: {L: reroll}
+    reroll:
+      a: L
+      b: L
+      c: L
+      A: L
+      B: L
+      C: L
+      d: L
+      t: L
+      u: L
+      v: L
+      w: L
+      x: L
+      y: L
+      z: L
+      $: L
+      /: {R: revert}
+      ;: L
+    revert:
+      t: {write: a, R}
+      u: {write: b, R}
+      v: {write: c, R}
+      w: {write: A, R}
+      x: {write: B, R}
+      y: {write: C, R}
+      z: {write: d, R}
+      a: {L: goback}
+      b: {L: goback}
+      c: {L: goback}
+      A: {L: goback}
+      B: {L: goback}
+      C: {L: goback}
+      d: {L: goback}
+      $: {L: goback}
+      ;: {L: goback}
+    goback:
+      a: L
+      b: L
+      c: L
+      A: L
+      B: L
+      C: L
+      d: L
+      /: {R: start}
+    finishword:
+      a: L
+      b: L
+      c: L
+      A: L
+      B: L
+      C: L
+      d: L
+      t: L
+      u: L
+      v: L
+      w: L
+      x: L
+      y: L
+      z: L
+      $: L
+      ;: {write: $, L}
+      /: {write: $, R: finishword2}
+    finishword2:
+      t: R
+      u: R
+      v: R
+      w: R
+      x: R
+      y: R
+      z: R
+      a: {write: t, R}
+      b: {write: u, R}
+      c: {write: v, R}
+      A: {write: w, R}
+      B: {write: x, R}
+      C: {write: y, R}
+      d: {write: z, R}
+      $: {R: first}
+      ' ': {L: restore_tape}
+    skore:
+      ' ': {write: $, R: setskore}
+      $: {R: setskore}
+    setskore:
+      ' ': {write: 1, R: finishskore}
+      1: R
+    finishskore:
+      1: L
+      $: {L: finishskore2}
+      ' ': L
+    finishskore2:
+      ' ': {L: finishword}
+    decline:
+      t: {write: a, L}
+      u: {write: b, L}
+      v: {write: c, L}
+      w: {write: A, L} 
+      x: {write: B, L}
+      y: {write: C, L}
+      z: {write: d, L}
+      \: {write: ;, L: reroll}
+    restore_tape:
+      t: {write: a, L}
+      u: {write: b, L}
+      v: {write: c, L}
+      w: {write: A, L} 
+      x: {write: B, L}
+      y: {write: C, L}
+      z: {write: d, L}
+      $: L
+      ' ': {R: restore_tape2}
+    restore_tape2:
+      $: {write: ' ', R: restore_tape3}
+    restore_tape3:
+      a: R
+      b: R
+      c: R
+      A: R
+      B: R
+      C: R
+      d: R
+      $: R
+      ' ': {R: accept}
+    accept:
+      
+    finda:
+      a: R
+      b: R
+      c: R
+      A: R
+      B: R
+      C: R
+      d: R
+      t: R
+      u: R
+      v: R
+      w: R
+      x: R
+      y: R
+      z: R
+      $: {write: \, R: nexta}
+      ;: R
+      ' ': {R: skore}
+    finda_f:
+      \: {R: nexta_f}
+      ;: R
+      a: R
+      b: R
+      c: R
+      A: R
+      B: R
+      C: R
+      d: R
+      t: R
+      u: R
+      v: R
+      w: R
+      x: R
+      y: R
+      z: R
+      $: R
+    nexta:
+      a: {write: t, L: back}
+      b: {L: reverta}
+      c: {L: reverta}
+      A: {L: reverta}
+      B: {L: reverta}
+      C: {L: reverta}
+      d: {L: reverta}
+      t: {L: reverta}
+      u: {L: reverta}
+      v: {L: reverta}
+      w: {L: reverta}
+      x: {L: reverta}
+      y: {L: reverta}
+      z: {L: reverta}
+    nexta_f:
+      t: R
+      u: R
+      v: R
+      w: R
+      x: R
+      y: R
+      z: R
+      a: {write: t, L: back}
+      b: {L: decline}
+      c: {L: decline}
+      A: {L: decline}
+      B: {L: decline}
+      C: {L: decline}
+      d: {L: decline}
+      ' ': {L: decline}
+      $: {L: decline}
+      ;: {L: decline}
+    reverta:
+      \: {write: $, R: finda}
+        
+      
+      
+    findb:
+      a: R
+      b: R
+      c: R
+      A: R
+      B: R
+      C: R
+      d: R
+      t: R
+      u: R
+      v: R
+      w: R
+      x: R
+      y: R
+      z: R
+      $: {write: \, R: nextb}
+      ;: R
+      ' ': {R: skore}
+    findb_f:
+      a: R
+      b: R
+      c: R
+      A: R
+      B: R
+      C: R
+      d: R
+      t: R
+      u: R
+      v: R
+      w: R
+      x: R
+      y: R
+      z: R
+      \: {R: nextb_f}
+      $: R
+      ;: R
+    nextb:
+      a: {L: revertb}
+      b: {write: u, L: back}
+      c: {L: revertb}
+      A: {L: revertb}
+      B: {L: revertb}
+      C: {L: revertb}
+      d: {L: revertb}
+      t: {L: revertb}
+      u: {L: revertb}
+      v: {L: revertb}
+      w: {L: revertb}
+      x: {L: revertb}
+      y: {L: revertb}
+      z: {L: revertb}
+    nextb_f:
+      t: R
+      u: R
+      v: R
+      w: R
+      x: R
+      y: R
+      z: R
+      b: {write: u, L: back}
+      c: {L: decline}
+      a: {L: decline}
+      A: {L: decline}
+      B: {L: decline}
+      C: {L: decline}
+      d: {L: decline}
+      ' ': {L: decline}
+      $: {L: decline}
+      ;: {L: decline}
+    revertb:
+      \: {write: $, R: findb}
+      
+      
+    findc:
+      a: R
+      b: R
+      c: R
+      A: R
+      B: R
+      C: R
+      d: R
+      t: R
+      u: R
+      v: R
+      w: R
+      x: R
+      y: R
+      z: R
+      $: {write: \, R: nextc}
+      ' ': {R: skore}
+      ;: R
+    findc_f:
+      a: R
+      b: R
+      c: R
+      A: R
+      B: R
+      C: R
+      d: R
+      t: R
+      u: R
+      v: R
+      w: R
+      x: R
+      y: R
+      z: R
+      \: {R: nextc_f}
+      $: R
+      ;: R
+    nextc:
+      a: {L: revertc}
+      b: {L: revertc}
+      c: {write: v, L: back}
+      A: {L: revertc}
+      B: {L: revertc}
+      C: {L: revertc}
+      d: {L: revertc}
+      t: {L: revertc}
+      u: {L: revertc}
+      v: {L: revertc}
+      w: {L: revertc}
+      x: {L: revertc}
+      y: {L: revertc}
+      z: {L: revertc}
+    nextc_f:
+      t: R
+      u: R
+      v: R
+      w: R
+      x: R
+      y: R
+      z: R
+      c: {write: v, L: back}
+      a: {L: decline}
+      b: {L: decline}
+      A: {L: decline}
+      B: {L: decline}
+      C: {L: decline}
+      d: {L: decline}
+      ' ': {L: decline}
+      $: {L: decline}
+      ;: {L: decline}
+    revertc:
+      \: {write: $, R: findc}
+    
+    findA:
+      a: R
+      b: R
+      c: R
+      A: R
+      B: R
+      C: R
+      d: R
+      t: R
+      u: R
+      v: R
+      w: R
+      x: R
+      y: R
+      z: R
+      $: {write: \, R: nextA}
+      ;: R
+      ' ': {R: skore}
+    findA_f:
+      \: {R: nextA_f}
+      ;: R
+      a: R
+      b: R
+      c: R
+      A: R
+      B: R
+      C: R
+      d: R
+      t: R
+      u: R
+      v: R
+      w: R
+      x: R
+      y: R
+      z: R
+      $: R
+    nextA:
+      a: {L: reverta}
+      b: {L: reverta}
+      c: {L: reverta}
+      A: {write: w, L: back}
+      B: {L: reverta}
+      C: {L: reverta}
+      d: {L: reverta}
+      t: {L: reverta}
+      u: {L: reverta}
+      v: {L: reverta}
+      w: {L: reverta}
+      x: {L: reverta}
+      y: {L: reverta}
+      z: {L: reverta}
+    nextA_f:
+      t: R
+      u: R
+      v: R
+      w: R
+      x: R
+      y: R
+      z: R
+      a: {L: decline}
+      b: {L: decline}
+      c: {L: decline}
+      A: {write: w, L: back}
+      B: {L: decline}
+      C: {L: decline}
+      d: {L: decline}
+      ' ': {L: decline}
+      $: {L: decline}
+      ;: {L: decline}
+    revertA:
+      \: {write: $, R: findA}
+    
+    
+    findB:
+      a: R
+      b: R
+      c: R
+      A: R
+      B: R
+      C: R
+      d: R
+      t: R
+      u: R
+      v: R
+      w: R
+      x: R
+      y: R
+      z: R
+      $: {write: \, R: nextB}
+      ;: R
+      ' ': {R: skore}
+    findB_f:
+      \: {R: nextB_f}
+      ;: R
+      a: R
+      b: R
+      c: R
+      A: R
+      B: R
+      C: R
+      d: R
+      t: R
+      u: R
+      v: R
+      w: R
+      x: R
+      y: R
+      z: R
+      $: R
+    nextB:
+      a: {L: reverta}
+      b: {L: reverta}
+      c: {L: reverta}
+      A: {L: reverta}
+      B: {write: x, L: back}
+      C: {L: reverta}
+      d: {L: reverta}
+      t: {L: reverta}
+      u: {L: reverta}
+      v: {L: reverta}
+      w: {L: reverta}
+      x: {L: reverta}
+      y: {L: reverta}
+      z: {L: reverta}
+    nextB_f:
+      t: R
+      u: R
+      v: R
+      w: R
+      x: R
+      y: R
+      z: R
+      a: {L: decline}
+      b: {L: decline}
+      c: {L: decline}
+      A: {L: decline}
+      B: {write: x, L: back}
+      C: {L: decline}
+      d: {L: decline}
+      ' ': {L: decline}
+      $: {L: decline}
+      ;: {L: decline}
+    revertB:
+      \: {write: $, R: findB}
+    
+    findC:
+      a: R
+      b: R
+      c: R
+      A: R
+      B: R
+      C: R
+      d: R
+      t: R
+      u: R
+      v: R
+      w: R
+      x: R
+      y: R
+      z: R
+      $: {write: \, R: nextC}
+      ;: R
+      ' ': {R: skore}
+    findC_f:
+      \: {R: nextC_f}
+      ;: R
+      a: R
+      b: R
+      c: R
+      A: R
+      B: R
+      C: R
+      d: R
+      t: R
+      u: R
+      v: R
+      w: R
+      x: R
+      y: R
+      z: R
+      $: R
+    nextC:
+      a: {L: reverta}
+      b: {L: reverta}
+      c: {L: reverta}
+      A: {L: reverta}
+      B: {L: reverta}
+      C: {write: y, L: back}
+      d: {L: reverta}
+      t: {L: reverta}
+      u: {L: reverta}
+      v: {L: reverta}
+      w: {L: reverta}
+      x: {L: reverta}
+      y: {L: reverta}
+      z: {L: reverta}
+    nextC_f:
+      t: R
+      u: R
+      v: R
+      w: R
+      x: R
+      y: R
+      z: R
+      a: {L: decline}
+      b: {L: decline}
+      c: {L: decline}
+      A: {L: decline}
+      B: {L: decline}
+      C: {write: y, L: back}
+      d: {L: decline}
+      ' ': {L: decline}
+      $: {L: decline}
+      ;: {L: decline}
+    revertC:
+      \: {write: $, R: findC}
+    
+    findd:
+      a: R
+      b: R
+      c: R
+      A: R
+      B: R
+      C: R
+      d: R
+      t: R
+      u: R
+      v: R
+      w: R
+      x: R
+      y: R
+      z: R
+      $: {write: \, R: nextd}
+      ;: R
+      ' ': {R: skore}
+    findd_f:
+      \: {R: nextd_f}
+      ;: R
+      a: R
+      b: R
+      c: R
+      A: R
+      B: R
+      C: R
+      d: R
+      t: R
+      u: R
+      v: R
+      w: R
+      x: R
+      y: R
+      z: R
+      $: R
+    nextd:
+      a: {L: reverta}
+      b: {L: reverta}
+      c: {L: reverta}
+      A: {L: reverta}
+      B: {L: reverta}
+      C: {L: reverta}
+      d: {write: z, L: back}
+      t: {L: reverta}
+      u: {L: reverta}
+      v: {L: reverta}
+      w: {L: reverta}
+      x: {L: reverta}
+      y: {L: reverta}
+      z: {L: reverta}
+    nextd_f:
+      t: R
+      u: R
+      v: R
+      w: R
+      x: R
+      y: R
+      z: R
+      a: {L: decline}
+      b: {L: decline}
+      c: {L: decline}
+      A: {L: decline}
+      B: {L: decline}
+      C: {L: decline}
+      d: {write: z, L: back}
+      ' ': {L: decline}
+      $: {L: decline}
+      ;: {L: decline}
+    revertd:
+      \: {write: $, R: findd}
+      
+      
+    find_last_f:
+      a: R
+      b: R
+      c: R
+      A: R
+      B: R
+      C: R
+      d: R
+      t: R
+      u: R
+      v: R
+      w: R
+      x: R
+      y: R
+      z: R
+      \: {R: next_last_f}
+      $: R
+      ;: R
+    next_last_f:
+      t: R
+      u: R
+      v: R
+      w: R
+      x: R
+      y: R
+      z: R
+      c: {L: decline}
+      a: {L: decline}
+      b: {L: decline}
+      A: {L: decline}
+      B: {L: decline}
+      C: {L: decline}
+      d: {L: decline}
+      /: {L: back_last}
+      ;: {L: back_last}
+      $: {L: back_last}
+      ' ': {L: back_last}
+    back_last:
+      \: L
+      a: L
+      b: L
+      c: L
+      A: L
+      B: L
+      C: L
+      d: L
+      t: L
+      u: L
+      v: L
+      w: L
+      x: L
+      y: L
+      z: L
+      $: L
+      ;: L
+      /: {R: dalsi_last}
+    dalsi_last:
+      t: R
+      u: R
+      v: R
+      w: R
+      x: R
+      y: R
+      z: R
+      $: {R: reset}
+      ;: {R: reset}
+      \: {write: $, R: reset}
+      ' ': {R: reset}
+positions:
+  first: {x: 20, y: 480, fixed: false}
+  setstart: {x: 20.73, y: 385.44}
+  start: {x: 186.36, y: 396.04}
+  start_f: {x: 689.8, y: 318.1}
+  back: {x: 563.84, y: 347.68}
+  dalsi: {x: 589.44, y: 126.27}
+  after: {x: 780, y: 207.92}
+  reset: {x: 590.54, y: 22.19}
+  reroll: {x: 570.02, y: 153.93}
+  revert: {x: 376.48, y: 45.81, fixed: false}
+  goback: {x: 170.31, y: 145.56}
+  finishword: {x: 20, y: 203.09, fixed: false}
+  finishword2: {x: 20, y: 358.21, fixed: false}
+  skore: {x: 212.91, y: 288.34, fixed: false}
+  setskore: {x: 118.26, y: 121.29, fixed: false}
+  finishskore: {x: 20, y: 20, fixed: false}
+  finishskore2: {x: 20, y: 83.42, fixed: false}
+  decline: {x: 605.76, y: 343.45, fixed: false}
+  restore_tape: {x: 20, y: 279.73, fixed: false}
+  restore_tape2: {x: 20, y: 461.8, fixed: false}
+  restore_tape3: {x: 118.3, y: 455.16}
+  accept: {x: 431.3, y: 137.26}
+  finda: {x: 325.55, y: 343.73, fixed: false}
+  finda_f: {x: 602.39, y: 480, fixed: false}
+  nexta: {x: 423.54, y: 232.1}
+  nexta_f: {x: 714.47, y: 430.13, fixed: false}
+  reverta: {x: 329.17, y: 480}
+  findb: {x: 286.63, y: 62.86}
+  findb_f: {x: 750.55, y: 477.85}
+  nextb: {x: 459.01, y: 465.21}
+  nextb_f: {x: 726.7, y: 359.87}
+  revertb: {x: 407.82, y: 266.44}
+  findc: {x: 278.87, y: 480}
+  findc_f: {x: 702.56, y: 247.79}
+  nextc: {x: 393.78, y: 480}
+  nextc_f: {x: 652.44, y: 253.88}
+  revertc: {x: 380.15, y: 466.85}
+  findA: {x: 81.58, y: 334.53, fixed: false}
+  findA_f: {x: 780, y: 434.9}
+  nextA: {x: 277.08, y: 436.9}
+  nextA_f: {x: 639.15, y: 480, fixed: false}
+  revertA: {x: 20, y: 444.37, fixed: false}
+  findB: {x: 114.75, y: 230.05, fixed: false}
+  findB_f: {x: 780, y: 480, fixed: false}
+  nextB: {x: 317.08, y: 229.86}
+  nextB_f: {x: 665.48, y: 480, fixed: false}
+  revertB: {x: 20, y: 111.37, fixed: false}
+  findC: {x: 255.47, y: 188.44, fixed: false}
+  findC_f: {x: 780, y: 411.16, fixed: false}
+  nextC: {x: 449.33, y: 192.03}
+  nextC_f: {x: 743.19, y: 290.28, fixed: false}
+  revertC: {x: 206.6, y: 20, fixed: false}
+  findd: {x: 205.61, y: 477.08}
+  findd_f: {x: 780, y: 223.32, fixed: false}
+  nextd: {x: 433.33, y: 480, fixed: false}
+  nextd_f: {x: 648.93, y: 193.71, fixed: false}
+  revertd: {x: 168.3, y: 461.01}
+  find_last_f: {x: 537.46, y: 480}
+  next_last_f: {x: 581.91, y: 221.49, fixed: false}
+  back_last: {x: 650.44, y: 25.79, fixed: false}
+  dalsi_last: {x: 780, y: 20, fixed: false}
